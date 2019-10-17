@@ -1,6 +1,6 @@
 # Mobile Robotik
 
-## Repository for the practical exercises of the lecture "Mobile Robotik".
+## Repository for the practical exercises of the lecture "Mobile Robotik"
 
 ### Authors
 
@@ -20,7 +20,7 @@
 
 1. Make sure you are in the root folder of this repository.
 2. Create the virtualenv with the name `mobi` via the command
-   
+   ### Setup the virtual environment for Linux
         virtualenv mobi
 
 3. activate the virtual environment on __Linux__ with the command `source`.
@@ -36,7 +36,7 @@
         pip install numpy matplotlib
 
 5. Open PyCharm and go to the settings (Key Combination: Ctrl + Alt + S). \
-   Go to `Project: mobile-robotik` -> `Project Interpreter`. \
+   Go to `Project: mobile-robotik` -> `Project Interpreter`.
 
 6. Add a new Project Interpreter
 7. Select the Option `Virtual Environment` -> Enable `Existing environment`.
