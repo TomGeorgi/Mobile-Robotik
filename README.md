@@ -16,7 +16,7 @@
 
    and on __Windows__ via the pip command
 
-        py 3 -m pip install virtualenv
+        py -3 -m pip install virtualenv
 
 1. Make sure you are in the root folder of this repository.
 2. Create the virtualenv with the name `mobi` via the command
