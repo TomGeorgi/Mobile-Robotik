@@ -20,7 +20,7 @@
 
 1. Make sure you are in the root folder of this repository.
 2. Create the virtualenv with the name `mobi` via the command
-   ### Setup the virtual environment for Linux
+        
         virtualenv mobi
 
 3. activate the virtual environment on __Linux__ with the command `source`.
