@@ -121,83 +121,79 @@ def rot_to_translate(r):
 
     return arr
 
+def create_transformationmatrix_z(theta, t_vektor):
+    t_vektor = trans(t_vektor)
+    r_matrix = rot_z(theta)
+    r_matrix = rot_to_translate(r_matrix)
+    return np.dot(t_vektor, r_matrix)
+
+def create_transformationmatrix_2d(theta, t_vektor):
+    t_vektor = trans(t_vektor)
+    r_matrix = rot(theta)
+    r_matrix = rot_to_translate(r_matrix)
+    return np.dot(t_vektor, r_matrix)
+
+
 def exercise_2_1():
     #a)
     tv_a_b = (-2, 0, 0)
-    tv_a_b = trans(tv_a_b)
-    r_a_b = rot_z(180)
-    r_a_b = rot_to_translate(r_a_b)
-    t_a_b = np.dot(tv_a_b, r_a_b);
+    t_a_b = create_transformationmatrix_z(180, tv_a_b)
     print("T_a_b:", t_a_b)
 
     tv_b_c = (-4, -1, 0)
-    tv_b_c = trans(tv_b_c)
-    r_b_c = rot_z(-90)
-    r_b_c = rot_to_translate(r_b_c)
-    t_b_c = np.dot(tv_b_c, r_b_c);
+    t_b_c = create_transformationmatrix_z(-90, tv_b_c)
     print("T_b_c:", t_b_c)
 
     tv_a_c = (2, 1, 0)
-    tv_a_c = trans(tv_a_c)
-    r_a_c = rot_z(90)
-    r_a_c = rot_to_translate(r_a_c)
-    t_a_c = np.dot(tv_a_c, r_a_c);
+    t_a_c = create_transformationmatrix_z(90, tv_a_c)
     print("T_a_c:", t_a_c)
 
     #b)
     t_a_c_2 = np.dot(t_a_b, t_b_c)
-    print(t_a_c == t_a_c_2)
+    print("b) ", np.array_equal(t_a_c, t_a_c_2))
 
     #c)
     t_c_a_2 = np.linalg.inv(t_a_c)
     tv_c_a = (-1, 2, 0)
-    tv_c_a = trans(tv_c_a)
-    r_c_a = rot_z(90)
-    r_c_a = rot_to_translate(r_c_a)
-    t_c_a = np.dot(tv_c_a, r_c_a)
-    print(t_c_a_2 == t_c_a)
+    t_c_a = create_transformationmatrix_z(-90, tv_c_a)
+    print("c) ", np.array_equal(t_c_a_2, t_c_a))
 
     #d)
-    p_c = [-2, 1, 0, 1]
-    print("t_a_b:", t_a_c)
-    p_a = np.dot(p_c, t_a_c)
+    p_b = [-3, 1, 0, 1]
+    p_a = np.dot(t_a_b, p_b)
     print("p_a:" , p_a)
 
 def exercise_2_2():
     #a)
     tv_0_a = (1, 1)
-    tv_0_a = trans(tv_0_a)
-    r_0_a = rot(0)
-    r_0_a = rot_to_translate(r_0_a)
-    t_0_a = np.dot(tv_0_a, r_0_a)
+    t_0_a = create_transformationmatrix_2d(0, tv_0_a)
     print("T_0_a:", t_0_a)
 
     tv_0_b = (3, 2)
-    tv_0_b = trans(tv_0_b)
-    r_0_b = rot(30)
-    r_0_b = rot_to_translate(r_0_b)
-    t_0_b = np.dot(tv_0_b, r_0_b)
+    t_0_b = create_transformationmatrix_2d(30, tv_0_b)
     print("T_0_b:", t_0_b)
 
     #b)
-    p_b = [[1], [1]]
-    #....
+    p_b = [1, 1, 1]
+    p_0 = np.dot(t_0_b, p_b)
+    print("P_0:", p_0)
 
     #c)
     t_a_0 = np.linalg.inv(t_0_a)
     t_a_b = np.dot(t_a_0, t_0_b)
-    print(t_a_b)
+    print("T_a_b:", t_a_b)
 
     #d)
-    #Gleiches Problem
-    #p_a
+    p_a = np.dot(t_a_b, p_b)
+    print("P_a:", p_a)
 
     #e)
-    #....
+    p_a_a = np.dot(t_a_b, p_a)
+    print("p_a_a:", p_a_a)
 
 if __name__ == '__main__':
     """ main """
-    #exercise_2_1()
+    exercise_2_1()
     exercise_2_2()
 
 
