@@ -62,7 +62,8 @@ def rot_x(theta):
         np.array of a 3D rotation matrix around the rotation axis x.
     """
     theta = np.radians(theta)
-    return np.array([[1, 0, 0], [0, np.round(np.cos(theta), 2), - np.round(np.sin(theta), 2)], [0, np.round(np.sin(theta), 2), np.round(np.cos(theta), 2)]])
+    return np.array([[1, 0, 0], [0, np.round(np.cos(theta), 2), - np.round(np.sin(theta), 2)],
+                     [0, np.round(np.sin(theta), 2), np.round(np.cos(theta), 2)]])
 
 
 def rot_y(theta):
@@ -77,7 +78,8 @@ def rot_y(theta):
         np.array of a 3D rotation matrix around the rotation axis y.
     """
     theta = np.radians(theta)
-    return np.array([[np.round(np.cos(theta), 2), 0, np.round(np.sin(theta), 2)], [0, 1, 0], [np.round(- np.sin(theta), 2), 0, np.round(np.cos(theta), 2)]])
+    return np.array([[np.round(np.cos(theta), 2), 0, np.round(np.sin(theta), 2)], [0, 1, 0],
+                     [np.round(- np.sin(theta), 2), 0, np.round(np.cos(theta), 2)]])
 
 
 def rot_z(theta):
@@ -92,7 +94,8 @@ def rot_z(theta):
         np.array of a 3D rotation matrix around the rotation axis z.
     """
     theta = np.radians(theta)
-    return np.array([[np.round(np.cos(theta), 2), - np.round(np.sin(theta), 2), 0], [np.round(np.sin(theta), 2), np.round(np.cos(theta), 2), 0], [0, 0, 1]])
+    return np.array([[np.round(np.cos(theta), 2), - np.round(np.sin(theta), 2), 0],
+                     [np.round(np.sin(theta), 2), np.round(np.cos(theta), 2), 0], [0, 0, 1]])
 
 
 def rot_to_translate(r):
@@ -121,11 +124,13 @@ def rot_to_translate(r):
 
     return arr
 
+
 def create_transformationmatrix_z(theta, t_vektor):
     t_vektor = trans(t_vektor)
     r_matrix = rot_z(theta)
     r_matrix = rot_to_translate(r_matrix)
     return np.dot(t_vektor, r_matrix)
+
 
 def create_transformationmatrix_2d(theta, t_vektor):
     t_vektor = trans(t_vektor)
@@ -135,7 +140,7 @@ def create_transformationmatrix_2d(theta, t_vektor):
 
 
 def exercise_2_1():
-    #a)
+    # a)
     tv_a_b = (-2, 0, 0)
     t_a_b = create_transformationmatrix_z(180, tv_a_b)
     print("T_a_b:", t_a_b)
@@ -148,23 +153,24 @@ def exercise_2_1():
     t_a_c = create_transformationmatrix_z(90, tv_a_c)
     print("T_a_c:", t_a_c)
 
-    #b)
+    # b)
     t_a_c_2 = np.dot(t_a_b, t_b_c)
     print("b) ", np.array_equal(t_a_c, t_a_c_2))
 
-    #c)
+    # c)
     t_c_a_2 = np.linalg.inv(t_a_c)
     tv_c_a = (-1, 2, 0)
     t_c_a = create_transformationmatrix_z(-90, tv_c_a)
     print("c) ", np.array_equal(t_c_a_2, t_c_a))
 
-    #d)
+    # d)
     p_b = [-3, 1, 0, 1]
     p_a = np.dot(t_a_b, p_b)
-    print("p_a:" , p_a)
+    print("p_a:", p_a)
+
 
 def exercise_2_2():
-    #a)
+    # a)
     tv_0_a = (1, 1)
     t_0_a = create_transformationmatrix_2d(0, tv_0_a)
     print("T_0_a:", t_0_a)
@@ -173,27 +179,26 @@ def exercise_2_2():
     t_0_b = create_transformationmatrix_2d(30, tv_0_b)
     print("T_0_b:", t_0_b)
 
-    #b)
+    # b)
     p_b = [1, 1, 1]
     p_0 = np.dot(t_0_b, p_b)
     print("P_0:", p_0)
 
-    #c)
+    # c)
     t_a_0 = np.linalg.inv(t_0_a)
     t_a_b = np.dot(t_a_0, t_0_b)
     print("T_a_b:", t_a_b)
 
-    #d)
+    # d)
     p_a = np.dot(t_a_b, p_b)
     print("P_a:", p_a)
 
-    #e)
+    # e)
     p_a_a = np.dot(t_a_b, p_a)
     print("p_a_a:", p_a_a)
+
 
 if __name__ == '__main__':
     """ main """
     exercise_2_1()
     exercise_2_2()
-
-
