@@ -62,8 +62,8 @@ def rot_x(theta):
         np.array of a 3D rotation matrix around the rotation axis x.
     """
     theta = np.radians(theta)
-    return np.array([[1, 0, 0], [0, np.round(np.cos(theta), 2), - np.round(np.sin(theta), 2)],
-                     [0, np.round(np.sin(theta), 2), np.round(np.cos(theta), 2)]])
+    return np.array([[1, 0, 0], [0, np.cos(theta), - np.sin(theta)],
+                     [0, np.sin(theta), np.cos(theta)]])
 
 
 def rot_y(theta):
@@ -78,8 +78,8 @@ def rot_y(theta):
         np.array of a 3D rotation matrix around the rotation axis y.
     """
     theta = np.radians(theta)
-    return np.array([[np.round(np.cos(theta), 2), 0, np.round(np.sin(theta), 2)], [0, 1, 0],
-                     [np.round(- np.sin(theta), 2), 0, np.round(np.cos(theta), 2)]])
+    return np.array([[np.cos(theta), 0, np.sin(theta)], [0, 1, 0],
+                     [- np.sin(theta), 0, np.cos(theta)]])
 
 
 def rot_z(theta):
@@ -94,8 +94,8 @@ def rot_z(theta):
         np.array of a 3D rotation matrix around the rotation axis z.
     """
     theta = np.radians(theta)
-    return np.array([[np.round(np.cos(theta), 2), - np.round(np.sin(theta), 2), 0],
-                     [np.round(np.sin(theta), 2), np.round(np.cos(theta), 2), 0], [0, 0, 1]])
+    return np.array([[np.cos(theta), - np.sin(theta), 0],
+                     [np.sin(theta), np.cos(theta), 0], [0, 0, 1]])
 
 
 def rot_to_translate(r):
