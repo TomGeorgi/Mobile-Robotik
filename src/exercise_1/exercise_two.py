@@ -16,6 +16,7 @@ import src.exercise_1.exercise_one as ex
 from mpl_toolkits import mplot3d
 import matplotlib.pyplot as pyp
 
+
 x_R = 2
 y_R = 1
 theta = 30
@@ -78,10 +79,10 @@ def exercise_2_b():
 def backwards_kinematic(point: tuple):
     x, y, z = point
 
-    t_R_DB = ex.create_transformationmatrix_z(0, (l / 2, 0, h))
-
     alpha_tmp = np.arctan2(y, (x - l / 2))
     alpha_tmp = np.rad2deg(alpha_tmp)
+
+    t_R_DB = ex.create_transformationmatrix_z(0, (l / 2, 0, h))
 
     tv_DB_D = (0, 0, 0)
     tv_DB_D = ex.trans(tv_DB_D)
@@ -105,9 +106,9 @@ def backwards_kinematic(point: tuple):
     beta_two_tmp = np.rad2deg(np.arctan2(b_tmp, c_tmp))
     beta_one_tmp = np.rad2deg(np.arctan2(y, x) - np.arctan2(b_tmp, (l_one + c_tmp)))
 
-    print("Alpha: ", str(alpha_tmp))
-    print("Beta One: ", str(beta_one_tmp))
-    print("Beta Two: ", str(beta_two_tmp))
+    # print("Alpha: ", str(alpha_tmp))
+    # print("Beta One: ", str(beta_one_tmp))
+    # print("Beta Two: ", str(beta_two_tmp))
 
     forward_kinematic(alpha_tmp, beta_one_tmp, beta_two_tmp)
     return alpha_tmp, beta_one_tmp, beta_two_tmp
@@ -183,8 +184,7 @@ def exercise2_c():
 
     fig2 = pyp.figure()
     ax2 = fig2.add_subplot(111, projection='3d')
-    ax2.scatter(x2, y2, z2)
-
+    ax2.scatter(x2, y2, z2, c='r')
     pyp.show()
 
 
