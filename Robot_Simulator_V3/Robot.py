@@ -26,19 +26,20 @@ class Robot:
 
         # Motion noise parameter:
         self._k_d = 0.05 * 0.05  # velocity noise parameter = 0.05m*0.05m / 1m
-        self._k_theta = (5.0 * 5.0/360.0) * (pi/180.0)  # turning rate noise parameter = 5deg*5deg/360deg * (1rad/1deg)
-        self._k_drift = (2.0 * 2.0)/1.0 * (pi/180.0)**2  # drift noise parameter = 2deg*2deg / 1m
-        self._maxSpeed = 1.0 # maximum speed
-        self._maxOmega = pi # maximum rotational speed
+        self._k_theta = (5.0 * 5.0 / 360.0) * (
+            pi / 180.0)  # turning rate noise parameter = 5deg*5deg/360deg * (1rad/1deg)
+        self._k_drift = (2.0 * 2.0) / 1.0 * (pi / 180.0) ** 2  # drift noise parameter = 2deg*2deg / 1m
+        self._maxSpeed = 1.0  # maximum speed
+        self._maxOmega = pi  # maximum rotational speed
 
         # SigmaMotion
-        self._SigmaMotion = np.zeros((2,2))
+        self._SigmaMotion = np.zeros((2, 2))
 
         # Laser Sensor (x-axis is in forward direction):
         self._numberOfBeams = 28
         self._viewAngle = 270.0
         dTheta = self._viewAngle / (self._numberOfBeams - 1)
-        self._sensorDirections = [(-135.0 + dTheta * i) * (pi/180.0) for i in range(self._numberOfBeams)]
+        self._sensorDirections = [(-135.0 + dTheta * i) * (pi / 180.0) for i in range(self._numberOfBeams)]
         self._maxSenseValue = 5.0  # Maximum sensor value for each sensor beam
         self._sensorNoise = 0.01  # standard deviation of distance measurement for 1m
 
@@ -51,13 +52,13 @@ class Robot:
         self._boxMinSenseValue = 0.2  # Maximum sensor value for each sensor beam
         self._boxMaxSenseValue = 5.0  # Maximum sensor value for each sensor beam
         self._boxDistSensorNoise = 0.01  # standard deviation of distance measurement for 1m
-        self._boxAngleSensorNoise = 1*(pi/180)  # standard deviation of angle measurement in rad
+        self._boxAngleSensorNoise = 1 * (pi / 180)  # standard deviation of angle measurement in rad
         self._boxPlace_x = 0.25  # box place in local x axis
         self._boxPlace_y = 0.0  # box place in local y axis
-        self._boxPickUp_x_min = 0.2   # box pick up area in local x axis
-        self._boxPickUp_x_max = 0.5   # box pick up area in local x axis
+        self._boxPickUp_x_min = 0.2  # box pick up area in local x axis
+        self._boxPickUp_x_max = 0.5  # box pick up area in local x axis
         self._boxPickUp_y_min = -0.1  # box pick up area in local y axis
-        self._boxPickUp_y_max = 0.1   # box pick up area in local y axis
+        self._boxPickUp_y_max = 0.1  # box pick up area in local y axis
         self._boxPickedUp = False
         self._boxInPickUpPosition = False
 
@@ -84,7 +85,6 @@ class Robot:
     #
     def getMaxSenseValue(self):
         return self._maxSenseValue
-
 
     # --------
     # move the robot for the next time step T by the
@@ -116,8 +116,8 @@ class Robot:
         omega_noisy += random.gauss(0.0, sqrt(sigma_omega_drift_2))
 
         # Set SigmaMotion:
-        self._SigmaMotion[0,0] = sigma_v_2
-        self._SigmaMotion[1,1] = sigma_omega_tr_2 + sigma_omega_drift_2
+        self._SigmaMotion[0, 0] = sigma_v_2
+        self._SigmaMotion[1, 1] = sigma_omega_tr_2 + sigma_omega_drift_2
 
         # Move robot in the world (with noise):
         d_noisy = v_noisy * self._T
@@ -140,7 +140,7 @@ class Robot:
         for d in sensorDist:
             if d is not None:
                 # print "d: ", d
-                sigma2 = self._sensorNoise**2 * d
+                sigma2 = self._sensorNoise ** 2 * d
                 d += random.gauss(0.0, sqrt(sigma2))
             sensorDistNoisy.append(d)
         return sensorDistNoisy
@@ -200,10 +200,10 @@ class Robot:
             a = da[1]
             if len(da) == 3:
                 self._boxInPickUpPosition = True
-            sigma2 = self._boxDistSensorNoise**2 * d
+            sigma2 = self._boxDistSensorNoise ** 2 * d
             d += random.gauss(0.0, sqrt(sigma2))
             a += random.gauss(0.0, self._boxAngleSensorNoise)
-            distAngleNoisy.append((d,a))
+            distAngleNoisy.append((d, a))
         return distAngleNoisy
 
     # --------
@@ -242,7 +242,7 @@ class Robot:
     #
     def senseLandmarks(self):
         z = []  # measurements
-        (x,y,_) = self._world.getTrueRobotPose()
+        (x, y, _) = self._world.getTrueRobotPose()
         for l in self._landmarks:
             d = sqrt((l[0] - x) ** 2 + (l[1] - y) ** 2)
             d += random.gauss(0.0, self._senseNoiseLandmarks)
@@ -259,7 +259,30 @@ class Robot:
             Sigma_SenseNoiseLandmarks[i, i] = self._senseNoiseLandmarks ** 2
         return Sigma_SenseNoiseLandmarks
 
+    def curveDrive(self, v, r, theta):
+        if v > self._maxSpeed:
+            v = 1
 
+        w = v / r
+        omega = w * pi / 180
+        if omega > self._maxOmega:
+            omega = self._maxOmega
+        if theta >= 0:
+            n = ceil((theta / w) * 10)
 
+            # Definiere Folge von Bewegungsbefehle:
+            motionCircle = [[v, omega] for i in range(n)]
+        else:
+            n = -ceil((theta / w) * 10)
 
+            # Definiere Folge von Bewegungsbefehle:
+            motionCircle = [[v, omega] for i in range(n)]
 
+        # Bewege Roboter
+        for t in range(n):
+            # Bewege Roboter
+            print(motionCircle[t])
+            self.move(motionCircle[t])
+
+    def straightDrive(self, v, l):
+        pass

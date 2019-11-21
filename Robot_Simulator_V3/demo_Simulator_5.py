@@ -3,7 +3,6 @@ from Robot_Simulator_V3 import officeWorld
 from Robot_Simulator_V3 import obstacleWorld3
 from Robot_Simulator_V3 import Robot
 from Robot_Simulator_V3 import sensorUtilities
-from PraktikumsAufgabe2 import OB_LineUtilities
 
 
 # Roboter in Office-World positionieren:
@@ -29,9 +28,6 @@ while True:
     lines_l = sensorUtilities.extractSegmentsFromSensorData(dists, directions)
     lines_g = sensorUtilities.transformPolylinesL2G(lines_l, myWorld.getTrueRobotPose())
     print(lines_l)
-    for line in lines_l:
-        d, alpha = OB_LineUtilities.getDistanceAndNormAngleToLocalLine(line)
-        print("d, alpha", alpha*180/pi, d, line )
     myWorld.drawPolylines(lines_g)
 
 # Simulation schliessen:
