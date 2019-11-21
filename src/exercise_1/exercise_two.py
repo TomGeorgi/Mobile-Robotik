@@ -78,10 +78,10 @@ def exercise_2_b():
 def backwards_kinematic(point: tuple):
     x, y, z = point
 
-    t_R_DB = ex.create_transformationmatrix_z(0, (l / 2, 0, h))
-
     alpha_tmp = np.arctan2(y, (x - l / 2))
     alpha_tmp = np.rad2deg(alpha_tmp)
+
+    t_R_DB = ex.create_transformationmatrix_z(0, (l / 2, 0, h))
 
     tv_DB_D = (0, 0, 0)
     tv_DB_D = ex.trans(tv_DB_D)
@@ -169,12 +169,13 @@ def exercise2_c():
     for i in range(0, 360):
         yValue = 0.2 + 0.1 * math.cos(np.deg2rad(i))
         zValue = 0.2 + 0.1 * math.sin(np.deg2rad(i))
-        alpha1, beta_one1, beta_two1, x, y, z, x2, y2, z2 = getAngle((0.5, yValue, zValue), alpha1, beta_one1, beta_two1,
+        alpha1, beta_one1, beta_two1, x, y, z, x2, y2, z2 = getAngle((1.2, yValue, zValue), alpha1, beta_one1, beta_two1,
                                                                      x, y, z, x2, y2, z2)
 
     pyp.plot(alpha1, 'b')
     pyp.plot(beta_one1, 'r')
     pyp.plot(beta_two1, 'y')
+    pyp.legend(['alpha', 'beta1', 'beta2'])
     pyp.show()
 
     fig = pyp.figure()
