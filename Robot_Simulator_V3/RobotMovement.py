@@ -27,10 +27,10 @@ class RobotMovement(Robot):
         self._world = None  # robot's world; is set by setWorld()
 
         # Motion noise parameter:
-        self._k_d = 0 #0.05 * 0.05  # velocity noise parameter = 0.05m*0.05m / 1m
-        self._k_theta = 0# (5.0 * 5.0 / 360.0) * (
-            #pi / 180.0)  # turning rate noise parameter = 5deg*5deg/360deg * (1rad/1deg)
-        self._k_drift = 0#(2.0 * 2.0) / 1.0 * (pi / 180.0) ** 2  # drift noise parameter = 2deg*2deg / 1m
+        self._k_d = 0  # 0.05 * 0.05  # velocity noise parameter = 0.05m*0.05m / 1m
+        self._k_theta = 0  # (5.0 * 5.0 / 360.0) * (
+        # pi / 180.0)  # turning rate noise parameter = 5deg*5deg/360deg * (1rad/1deg)
+        self._k_drift = 0  # (2.0 * 2.0) / 1.0 * (pi / 180.0) ** 2  # drift noise parameter = 2deg*2deg / 1m
         self._maxSpeed = 1.0  # maximum speed
         self._maxOmega = pi  # maximum rotational speed
 
@@ -124,3 +124,57 @@ class RobotMovement(Robot):
 
     def isclose(self, a, b, rel_tol=1e-09, abs_tol=0.0):
         return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+    def followLine(self, p1, p2):
+        p1_x, p1_y = p1
+        p2_x, p2_y = p2
+
+        vBase = np.array([p2_x-p1_x, p2_y - p1_y, 0])
+
+        pos = self._world.getTrueRobotPose()
+        pos_x = pos[0]
+        pos_y = pos[1]
+        ori = pos[2]
+        print(vBase)
+
+        vDistance = np.cross(vBase, np.array([pos_x-p1_x, pos_y - p1_y, 0]))
+        print(vDistance)
+        distance = sqrt(pow(vDistance[0], 2) + pow(vDistance[1], 2) + 0)
+        print(distance)
+
+
+
+    def gotoGlobal(self, v, p, tol):
+        pos = self._world.getTrueRobotPose()
+        px, py = p
+        posx = pos[0]
+        posy = pos[1]
+        ori = pos[2]
+
+        delta_x = px - posx
+        delta_y = py - posy
+
+        distance = sqrt(pow(delta_x, 2) + pow(delta_y, 2))
+
+        # print(distance)
+
+        if distance < tol:
+            return
+
+        theta = np.arctan2(delta_y, delta_x)
+
+        delta_theta = theta - ori
+
+        while delta_theta < -pi:
+            delta_theta = delta_theta + (2 * pi)
+
+        while delta_theta > pi:
+            delta_theta = delta_theta - (2 * pi)
+
+        print(delta_theta)
+        K_w = 0.1
+
+        # w = min(self._maxOmega, K_w * delta_theta)
+        w = delta_theta
+        self.move([v, w])
+        self.gotoGlobal(v, p, tol)
