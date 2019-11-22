@@ -285,4 +285,11 @@ class Robot:
             self.move(motionCircle[t])
 
     def straightDrive(self, v, l):
-        pass
+        n = ceil((l/v) * 10)
+        motionLine = [[v, 0] for i in range(n)]
+        # Bewege Roboter
+        for t in range(n):
+            # Bewege Roboter
+            print(motionLine[t])
+            self.move(motionLine[t])
+
