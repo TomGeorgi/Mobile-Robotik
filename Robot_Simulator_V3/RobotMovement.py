@@ -137,10 +137,19 @@ class RobotMovement(Robot):
         ori = pos[2]
         print(vBase)
 
-        vDistance = np.cross(vBase, np.array([pos_x-p1_x, pos_y - p1_y, 0]))
+        vT = np.array([pos_x-p1_x, pos_y - p1_y, 0])
+        print(vT)
+
+        vDistance = np.cross(vBase, vT)
         print(vDistance)
-        distance = sqrt(pow(vDistance[0], 2) + pow(vDistance[1], 2) + 0)
-        print(distance)
+        vDistanceAbs = sqrt(pow(vDistance[0], 2) + pow(vDistance[1], 2) + pow(vDistance[2], 2))
+        vBaseAbs = sqrt(pow(vBase[0], 2) + pow(vBase[1], 2) + pow(vBase[2], 2))
+
+        e = vDistanceAbs/vBaseAbs
+        r = 1
+
+        theta = np.arctan2(e/r)
+
 
 
 
