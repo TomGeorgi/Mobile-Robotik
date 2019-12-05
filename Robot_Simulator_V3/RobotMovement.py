@@ -34,7 +34,7 @@ class RobotMovement(Robot):
         else:
             w = v / r
 
-        omega = w * pi / 180
+        omega = w
         if omega > self._maxOmega:
             omega = self._maxOmega
 

@@ -21,11 +21,15 @@ if __name__ == '__main__':
     myWorld = emptyWorld.buildWorld()
     myRobot = RobotMovement.RobotMovement()
 
+
+
     myWorld.setRobot(myRobot, [10, 5.5, pi / 2])
     myWorld._showPathHistory = True
+    myWorld.drawPolyline(((10, 9), (10, 10)))
+    myRobot.curveDrive(0.8, 2, 180)
     myWorld.drawPolyline(((3, 10), (20, 10)))
 
-    exerciseb()
+    # exerciseb()
     # exercisea()
     # Simulation schliessen:
     myWorld.close()
