@@ -163,3 +163,20 @@ class RobotMovement(Robot):
     def followPolyline(self, v, poly):
         for point in poly:
             self.gotoGlobal(v, point, 0.5)
+
+    def wander(self, v):
+        while True:
+            directions = self.getSensorDirections()
+            sense = self.sense()
+
+            for i in range(0, len(sense)):
+                print(sense[i])
+                if sense[i] != None:
+                    if sense[i] < 1:
+                        direction = directions[i]
+                        self.curveDrive(0, 0, direction+pi/2)
+                        self.straightDrive(v, 0.1)
+
+            theta = random.uniform(-pi, pi)
+            r = random.randrange(0, 5)
+            self.curveDrive(v, r, theta)
