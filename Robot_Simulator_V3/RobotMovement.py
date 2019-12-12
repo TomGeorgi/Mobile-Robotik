@@ -176,7 +176,7 @@ class RobotMovement(Robot):
                         min = sense[i]
                         direction = directions[i]
 
-            if min < 0.6 and (direction < 0.5 or direction > -0.5):
+            if min < 0.6 and -0.5 < direction < 0.5:
                 if direction > 0:
                     rotation = -1
                 else:
@@ -190,12 +190,35 @@ class RobotMovement(Robot):
                 self.move([v, 0])
 
     def followWall(self, v, d):
+        self.wander(v)
 
+        while True:
+            sense = self.sense()
+            a = self.findWall(d)
+
+            if len(a) > 0:
+                end = a[0][1]
+                end[1] = end[1] + d
+                if sense[13] != None and sense[13] < d * 1.3:
+                    self.curveDrive(v, d/3, 90)
+                else:
+                    direction = np.arctan2(end[1], end[0])
+                    self.move([v, direction])
+
+            else:
+                self.curveDrive(v, d, -90)
 
     def isWall(self):
-        a = sensorUtilities.extractSegmentsFromSensorData(self.sense(), self.getSensorDirections());
-        return len(a) > 0
+        return len(self.findWall(0.7)) > 0
 
-    def findWall(self):
-        a = sensorUtilities.extractSegmentsFromSensorData(self.sense(), self.getSensorDirections());
+
+    def findWall(self, d):
+        sensor = self.sense()[3:12]
+
+        for i in range(0, len(sensor)):
+            if sensor[i] != None and sensor[i] > d + 0.3:
+                sensor[i] = None
+
+        directions = self.getSensorDirections()
+        a = sensorUtilities.extractSegmentsFromSensorData(sensor, directions[3:12])
         return a

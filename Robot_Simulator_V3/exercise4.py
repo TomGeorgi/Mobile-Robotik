@@ -5,7 +5,8 @@ from Robot_Simulator_V3 import RobotMovement
 
 
 def exercisea():
-    myRobot.wander(1)
+    #myRobot.wander(1)
+    myRobot.followWall(0.5, 0.7)
 
 
 if __name__ == '__main__':

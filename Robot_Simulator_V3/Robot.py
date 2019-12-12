@@ -25,9 +25,9 @@ class Robot:
         self._world = None  # robot's world; is set by setWorld()
 
         # Motion noise parameter:
-        self._k_d = 0  # 0.05 * 0.05  # velocity noise parameter = 0.05m*0.05m / 1m
-        self._k_theta = 0  # (5.0 * 5.0 / 360.0) * (pi / 180.0)  # turning rate noise parameter = 5deg*5deg/360deg * (1rad/1deg)
-        self._k_drift = 0  # (2.0 * 2.0) / 1.0 * (pi / 180.0) ** 2  # drift noise parameter = 2deg*2deg / 1m
+        self._k_d = 0.05 * 0.05  # velocity noise parameter = 0.05m*0.05m / 1m
+        self._k_theta = (5.0 * 5.0 / 360.0) * (pi / 180.0)  # turning rate noise parameter = 5deg*5deg/360deg * (1rad/1deg)
+        self._k_drift = (2.0 * 2.0) / 1.0 * (pi / 180.0) ** 2  # drift noise parameter = 2deg*2deg / 1m
         self._maxSpeed = 1.0  # maximum speed
         self._maxOmega = pi  # maximum rotational speed
 
