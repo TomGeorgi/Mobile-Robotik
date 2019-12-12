@@ -15,7 +15,7 @@ import numpy as np
 import random
 
 from Robot_Simulator_V3.Robot import Robot
-from Robot_Simulator_V3 import geometry
+from Robot_Simulator_V3 import geometry, sensorUtilities
 
 
 class RobotMovement(Robot):
@@ -94,7 +94,7 @@ class RobotMovement(Robot):
         pos_x = pos[0]
         pos_y = pos[1]
         while abs(sqrt(pow(p2_x - pos_x, 2) + pow(p2_y - pos_y, 2))) > 0.5:
-            vBase = np.array([p2_x-p1_x, p2_y - p1_y, 0])
+            vBase = np.array([p2_x - p1_x, p2_y - p1_y, 0])
 
             pos = self._world.getTrueRobotPose()
             pos_x = pos[0]
@@ -112,7 +112,6 @@ class RobotMovement(Robot):
             e_plus_r = [e[0] + vT_norm[0], e[1] + vT_norm[1]]
             print(e_plus_r)
 
-
             # print(vT)
             #
             # vDistance = np.cross(vBase, vT)
@@ -123,7 +122,7 @@ class RobotMovement(Robot):
             # e = vDistanceAbs/vBaseAbs
 
             theta_star = np.arctan2(e_plus_r[1], e_plus_r[0])
-            delta_theta = (theta_star - ori + pi) % (2*pi) - pi  # DAS DA, DESWEGEN FUNKTIONIERT ES
+            delta_theta = (theta_star - ori + pi) % (2 * pi) - pi  # DAS DA, DESWEGEN FUNKTIONIERT ES
 
             self.move([0.5, delta_theta])
         # self.followLine(p1, p2)
@@ -166,17 +165,37 @@ class RobotMovement(Robot):
 
     def wander(self, v):
         while True:
+            if self.isWall():
+                break
             directions = self.getSensorDirections()
             sense = self.sense()
-
+            min = inf
             for i in range(0, len(sense)):
-                print(sense[i])
                 if sense[i] != None:
-                    if sense[i] < 1:
+                    if min > sense[i]:
+                        min = sense[i]
                         direction = directions[i]
-                        self.curveDrive(0, 0, direction+pi/2)
-                        self.straightDrive(v, 0.1)
 
-            theta = random.uniform(-pi, pi)
-            r = random.randrange(0, 5)
-            self.curveDrive(v, r, theta)
+            if min < 0.6 and (direction < 0.5 or direction > -0.5):
+                if direction > 0:
+                    rotation = -1
+                else:
+                    rotation = 1
+
+                if min < 0.35:
+                    self.move([v / 10, pi / 2 * rotation])
+                else:
+                    self.move([v / 10, pi / 4 * rotation])
+            else:
+                self.move([v, 0])
+
+    def followWall(self, v, d):
+
+
+    def isWall(self):
+        a = sensorUtilities.extractSegmentsFromSensorData(self.sense(), self.getSensorDirections());
+        return len(a) > 0
+
+    def findWall(self):
+        a = sensorUtilities.extractSegmentsFromSensorData(self.sense(), self.getSensorDirections());
+        return a
