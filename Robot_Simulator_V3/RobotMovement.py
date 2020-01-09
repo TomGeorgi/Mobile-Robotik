@@ -54,7 +54,7 @@ class RobotMovement(Robot):
         # Bewege Roboter
         for t in range(n):
             # Bewege Roboter
-            print(motionCircle[t])
+            # print(motionCircle[t])
             self.move(motionCircle[t])
 
     def straightDrive(self, v, l):
@@ -63,7 +63,7 @@ class RobotMovement(Robot):
         # Bewege Roboter
         for t in range(n):
             # Bewege Roboter
-            print(motionLine[t])
+            # print(motionLine[t])
             self.move(motionLine[t])
 
     def rectangle(self, v, l):
@@ -100,7 +100,6 @@ class RobotMovement(Robot):
             pos_x = pos[0]
             pos_y = pos[1]
             ori = pos[2]
-            print(ori)
             e = geometry.normalToLine((pos_x, pos_y), (p1, p2))
             # print(vBase)
             #
@@ -126,10 +125,6 @@ class RobotMovement(Robot):
 
             self.move([0.5, delta_theta])
         # self.followLine(p1, p2)
-        print(e)
-        print(ori)
-        print(theta_star)
-        print(delta_theta)
 
     def gotoGlobal(self, v, p, tol):
         pos = self._world.getTrueRobotPose()
@@ -146,18 +141,21 @@ class RobotMovement(Robot):
         # print(distance)
 
         if distance < tol:
-            return
+            return False
+
+        if self.senseBoxes() is not None and not self._boxPickedUp:
+            return True
 
         theta = np.arctan2(delta_y, delta_x)
         delta_theta = (theta - ori + pi) % (2 * pi) - pi
 
-        print(delta_theta)
         K_w = 0.1
 
         # w = min(self._maxOmega, K_w * delta_theta)
         w = delta_theta
         self.move([v, w])
-        self.gotoGlobal(v, p, tol)
+        if self.gotoGlobal(v, p, tol):
+            return True
 
     def followPolyline(self, v, poly):
         for point in poly:
@@ -200,7 +198,7 @@ class RobotMovement(Robot):
                 end = a[0][1]
                 end[1] = end[1] + d
                 if sense[13] != None and sense[13] < d * 1.3:
-                    self.curveDrive(v, d/3, 90)
+                    self.curveDrive(v, d / 3, 90)
                 else:
                     direction = np.arctan2(end[1], end[0])
                     self.move([v, direction])
@@ -210,7 +208,6 @@ class RobotMovement(Robot):
 
     def isWall(self):
         return len(self.findWall(0.7)) > 0
-
 
     def findWall(self, d):
         sensor = self.sense()[3:12]
@@ -222,3 +219,49 @@ class RobotMovement(Robot):
         directions = self.getSensorDirections()
         a = sensorUtilities.extractSegmentsFromSensorData(sensor, directions[3:12])
         return a
+
+    def drivePath(self, v, path):
+        # x, y, _ = self._world.getTrueRobotPose()
+        # path.append([x, y])
+        while True:
+            last = self.drive(v, path[::-1])
+            if last == -1:
+                break
+
+            (x, y, theta) = self._world.getTrueRobotPose()
+
+            self.gotoBox(v)
+            back = path[len(path)-last:]
+            back.insert(0, [x, y])
+            print(back)
+            self.drive(v, back)
+
+            self.placeBox()
+            print(self._world.getTrueRobotPose())
+            self.move([path[-2][0], path[-2][1]])
+
+    def drive(self, v, path):
+        for i, point in enumerate(path):
+            if self.gotoGlobal(v, point, 0.1):
+                return i
+        return -1
+
+    def gotoBox(self, v):
+        while True:
+            boxes = self.senseBoxes()
+
+            if boxes is None:
+                break
+
+            box = boxes[0]
+            box_x = box[0]
+            box_y = box[1]
+
+            x, y, _ = self._world.getTrueRobotPose()
+            if self.boxInPickUpPosition() and (x, y) != (16., 12.):
+                self.pickUpBox()
+                self.move([0., 0.])
+                return
+
+            theta_new = np.arctan2(box_y, box_x)
+            self.move([v, -theta_new])
