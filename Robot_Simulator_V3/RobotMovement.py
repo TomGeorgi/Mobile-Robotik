@@ -233,11 +233,9 @@ class RobotMovement(Robot):
             self.gotoBox(v)
             back = path[len(path)-last:]
             back.insert(0, [x, y])
-            print(back)
             self.drive(v, back)
 
             self.placeBox()
-            print(self._world.getTrueRobotPose())
             self.move([path[-2][0], path[-2][1]])
 
     def drive(self, v, path):
@@ -254,14 +252,12 @@ class RobotMovement(Robot):
                 break
 
             box = boxes[0]
-            box_x = box[0]
             box_y = box[1]
 
             x, y, _ = self._world.getTrueRobotPose()
-            if self.boxInPickUpPosition() and (x, y) != (16., 12.):
+            if self.boxInPickUpPosition():
                 self.pickUpBox()
                 self.move([0., 0.])
                 return
 
-            theta_new = np.arctan2(box_y, box_x)
-            self.move([v, -theta_new])
+            self.move([v, -box_y])
