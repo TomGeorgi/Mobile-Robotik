@@ -71,10 +71,10 @@ class World:
         self._rooms = []
 
         # Define graphic window with coordinates and draw borderline
-        self._win = GraphWin("HTWG Robot Simulator", int(800.0*width/height), 800, autoflush=False)
-        self._win.setCoords(self._xll-0.1, self._yll-0.3, self._xll+width+0.1, self._yll+height+0.1)
+        self.win = GraphWin("HTWG Robot Simulator", int(800.0 * width / height), 800, autoflush=False)
+        self.win.setCoords(self._xll - 0.1, self._yll - 0.3, self._xll + width + 0.1, self._yll + height + 0.1)
         for l in self._lines:
-            l.draw(self._win)
+            l.draw(self.win)
 
         # Robot (initialization is done in setRobot()
         self._robot = None
@@ -92,7 +92,7 @@ class World:
         self._clockTime = 0.0
         p = Point(self._xll+width/2, self._yll-0.1)
         self._clockTimeText = Text(p,"Clock Time %4.2f" % self._clockTime )
-        self._clockTimeText.draw(self._win)
+        self._clockTimeText.draw(self.win)
 
         # Occupancy Grid:
         self._grid = None
@@ -116,7 +116,7 @@ class World:
         drawn_Polyline = []
         for n in range(len(polyline)-1):
             l = Line(Point(polyline[n][0], polyline[n][1]), Point(polyline[n + 1][0], polyline[n + 1][1]))
-            l.draw(self._win)
+            l.draw(self.win)
             l.setFill(color)
             l.setWidth(3)
             drawn_Polyline.append(l)
@@ -131,7 +131,7 @@ class World:
             drawn_Polyline = []
             for n in range(len(polyline) - 1):
                 l = Line(Point(polyline[n][0], polyline[n][1]), Point(polyline[n + 1][0], polyline[n + 1][1]))
-                l.draw(self._win)
+                l.draw(self.win)
                 l.setFill(color)
                 l.setWidth(3)
                 drawn_Polyline.append(l)
@@ -166,9 +166,9 @@ class World:
     def addLine(self, x0, y0, x1, y1):
         l = Line(Point(x0,y0),Point(x1,y1))
         self._lines.append(l)
-        l.setWidth(5)
+        l.setWidth(1)
         l.setFill('blue')
-        l.draw(self._win)
+        l.draw(self.win)
 
     # --------
     # add new a new obstacle line from point (x0,y0) to (x1,y1)
@@ -179,14 +179,14 @@ class World:
         self._dynObstacles.add(l)
         l.setWidth(10)
         l.setFill('red')
-        l.draw(self._win)
+        l.draw(self.win)
 
     # --------
     # add new a new round Box at point (x,y).
     #
     def addBox(self, x, y):
         box = Circle(Point(x,y),self._boxRadius)
-        box.draw(self._win)
+        box.draw(self.win)
         self._boxes.add(box)
 
     # --------
@@ -241,7 +241,7 @@ class World:
     def defineRoom(self, n, x, y):
         self._rooms.append([n,x,y])
         t = Text(Point(x,y),n)
-        t.draw(self._win)
+        t.draw(self.win)
 
     # --------
     # Return all rooms.
@@ -267,8 +267,8 @@ class World:
         self._robotTheta = theta
         p = Point(x+r*cos(theta),y+r*sin(theta))
         self._robotLine = Line(c,p) # line shows the robot's orientation
-        self._robotCircle.draw(self._win)
-        self._robotLine.draw(self._win)
+        self._robotCircle.draw(self.win)
+        self._robotLine.draw(self.win)
         self._robotLine.setWidth(3)
         self._drivenDistance = 0.0
 
@@ -279,7 +279,7 @@ class World:
         # Show all:
         self._udateWindow()
         print("click in window to start")
-        self._win.getMouse() # pause for click in window
+        self.win.getMouse() # pause for click in window
         #k = self.win.getKey()
         #print "key "
 
@@ -320,7 +320,7 @@ class World:
         self._robotTheta = (self._robotTheta + dTheta)%(2*pi)
         p = Point(x+dx+r*cos(self._robotTheta),y+dy+r*sin(self._robotTheta))
         self._robotLine = Line(nc,p)
-        self._robotLine.draw(self._win)
+        self._robotLine.draw(self.win)
         self._robotLine.setWidth(3)
 
         # Path history:
@@ -329,7 +329,7 @@ class World:
             pathLine = Line(c,nc)
             pathLine.setFill('red')
             pathLine.setWidth(3)
-            pathLine.draw(self._win)
+            pathLine.draw(self.win)
         #print x+dx, y+dy, self.robotTheta
 
          # Clear sensor values, compute new sensor values and draw it:
@@ -401,11 +401,11 @@ class World:
             l = Line(p,q)
             l.setFill('red')
             self._sensorLines.append(l)
-            l.draw(self._win)
+            l.draw(self.win)
         self._robotCircle.undraw()
         self._robotLine.undraw()
-        self._robotCircle.draw(self._win)
-        self._robotLine.draw(self._win)
+        self._robotCircle.draw(self.win)
+        self._robotLine.draw(self.win)
         self._robotLine.setWidth(3)
 
     # --------
@@ -438,26 +438,26 @@ class World:
                                 box.setFill('red')
                                 self._boxesSensedDistAngle.append((d, alphaBox))
 
-                box.draw(self._win)
+                box.draw(self.win)
         return self._boxesSensedDistAngle
 
     def getKeyboardController(self):
-        return KeyboardController.KeyboardController(self._win)
+        return KeyboardController.KeyboardController(self.win)
 
     # --------
     # update and draw the actual window.
     # If simulation runs to fast then delay wth a time.sleep()
     def _udateWindow(self):
         #time.sleep(0.05)
-        self._win.update()
+        self.win.update()
         #self.win.getMouse() # pause for click in window
 
 
     def close(self, waitForClick = True):
         if waitForClick:
             print("click in window to close")
-            self._win.getMouse() # pause for click in window
-        self._win.close()
+            self.win.getMouse() # pause for click in window
+        self.win.close()
 
 
     # --------
