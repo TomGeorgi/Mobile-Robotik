@@ -68,7 +68,7 @@ class ParticleFilterPoseEstimator:
             for coord in coords:
                 dist = distantMap.getValue(coord[0], coord[1])
                 if dist is None:
-                    dist = 100
+                    continue
                 p_w = p_w * self.normal(0, 0.4, dist)
             self._particles_weighted.append((particle[0], particle[1], particle[2], p_w))
 
